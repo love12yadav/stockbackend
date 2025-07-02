@@ -1,65 +1,88 @@
-Stock Price Notifier 🚨
-A real-time full-stack application to notify users via email when a stock price crosses a defined threshold using Kafka, Spring Boot, and React.
+📈 Stock Price Notifier – Backend
+A real-time backend system to notify users via email and WebSocket when a stock price crosses a defined threshold. Built using Spring Boot, Apache Kafka, MySQL, and WebSocket.
 
 🚀 Features
-✅ User alert registration (email, phone, stock symbol, threshold, above/below)
+✅ User alert registration (email, stock symbol, threshold, above/below condition)
 
 🔁 Real-time Kafka-based stock price processing
 
 📬 Email alerts triggered on threshold breach
 
-🧪 Kafka message trigger test button
+📡 WebSocket notifications for in-app real-time alerts
 
-📊 React frontend with form + live test
+🧪 Kafka test endpoint to simulate stock price messages
+
+💾 MySQL persistence for user alert preferences
 
 🧩 Tech Stack
-Layer	Tech
-Backend	Java, Spring Boot, Kafka
-Frontend	React (Vite), Tailwind CSS
-Broker	Apache Kafka
+Layer	Technology
+Backend	Java, Spring Boot
+Messaging	Apache Kafka
+Realtime	Spring Boot WebSocket
 Database	MySQL
 Email	Spring Boot Mail + Gmail SMTP
 
 🛠️ Project Structure
-css
+bash
 Copy
 Edit
-📦 stock-price-notifier/
-├── backend/
-│   ├── src/main/java/com/Stock/demo/
-│   │   ├── controller/
-│   │   ├── service/
-│   │   ├── consumer/
-│   │   ├── model/
-│   │   ├── repository/
-│   │   └── DemoApplication.java
+📦 backend/
+├── src/main/java/com/Stock/demo/
+│   ├── controller/         # REST + WebSocket endpoints
+│   ├── service/            # Business logic
+│   ├── consumer/           # Kafka consumers
+│   ├── model/              # Entity classes
+│   ├── repository/         # JPA repositories
+│   ├── websocket/          # WebSocket config and handler
+│   └── DemoApplication.java
+├── src/main/resources/
 │   └── application.properties
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── App.jsx
-│   └── vite.config.js
-└── README.md
 ⚙️ How It Works
-User registers an alert on the frontend → stored in MySQL.
+User registers an alert (email, stock symbol, threshold) via REST API.
 
-Kafka receives stock price updates (manual or API).
+Data is stored in MySQL.
 
-Kafka consumer checks user preferences and sends email if conditions match.
+Kafka receives stock price updates (manually or from API).
 
-Emails sent via Gmail SMTP with logs in console.
+Kafka consumer compares the price with user thresholds.
+
+If a condition is met:
+
+An email alert is sent.
+
+A WebSocket message is pushed to connected frontend clients.
+
+Frontend receives real-time in-app notifications.
 
 📬 Email Setup (Gmail)
-Enable App Passwords in Gmail.
+Enable 2FA on your Gmail account.
 
-Use the 16-character key in application.properties:
+Generate a 16-character App Password.
+
+Add to application.properties:
 
 properties
 Copy
 Edit
 spring.mail.username=your@gmail.com
 spring.mail.password=your_app_password
+📡 WebSocket Endpoint
+WebSocket connection endpoint:
+
+bash
+Copy
+Edit
+ws://localhost:8080/ws/alerts
+Clients receive messages when a threshold is breached:
+
+json
+Copy
+Edit
+{
+  "symbol": "AAPL",
+  "price": 180.0,
+  "message": "AAPL has crossed your alert threshold"
+}
 ▶️ Run Instructions
 🔹 Backend (Spring Boot)
 bash
@@ -71,24 +94,31 @@ cd backend
 bash
 Copy
 Edit
-# Terminal 1
+# Terminal 1 - Zookeeper
 zookeeper-server-start.bat config/zookeeper.properties
 
-# Terminal 2
+# Terminal 2 - Kafka Broker
 kafka-server-start.bat config/server.properties
+
+# Create topic
 kafka-topics.bat --create --topic stock-prices --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-🔹 Frontend (React + Vite)
-bash
+🧪 Kafka Test API
+Simulate a stock price update:
+
+css
 Copy
 Edit
-cd frontend
-npm install
-npm run dev
+POST /api/test-publish
+Body:
+{
+  "symbol": "AAPL",
+  "price": 180.0
+}
+✅ This will:
 
+Check user alert conditions.
 
-🤝 Contributions
-PRs welcome! Feel free to suggest enhancements.
+Trigger email + WebSocket notifications if matched.
 
 📜 License
-MIT License
-
+This project is licensed under the MIT License.
