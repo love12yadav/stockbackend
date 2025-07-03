@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: java_app_stock
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/stocknotifier
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Openbaby@123
+    depends_on:
+      db:
+        condition: service_healthy  # ✅ waits for MySQL to be healthy
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db_2
+    restart: always
+    environment:
+      MYSQL_DATABASE: stocknotifier
+      MYSQL_ROOT_PASSWORD: Openbaby@123
+    ports:
+      - "3308:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:                     # ✅ Add this to make sure MySQL is fully ready
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
