@@ -27,7 +27,10 @@ public class UserAlertController {
     public List<UserAlertPreference> getAlertsBySymbol(@PathVariable String symbol) {
         return alertRepo.findBySymbol(symbol);
     }
-
+    @GetMapping
+    public List<UserAlertPreference> getAllAlerts() {
+        return alertRepo.findAll();
+    }
     // ✅ Delete alert by email + symbol + threshold
     @DeleteMapping("/delete")
     @Transactional
