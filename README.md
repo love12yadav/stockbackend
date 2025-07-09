@@ -80,3 +80,10 @@ kafka-server-start.bat config/server.properties
 
 # Create Kafka Topic
 kafka-topics.bat --create --topic stock-prices --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+
+## 🔗 Frontend Repository
+
+👉 Check out the React frontend here:  
+**[➡️ Stock Price Notifier Frontend](https://github.com/love12yadav/stockfront)**
+
